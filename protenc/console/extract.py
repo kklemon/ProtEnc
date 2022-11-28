@@ -73,7 +73,7 @@ def main(args):
     batches = DataLoader(
         utils.IteratorWrapper(input_reader),
         batch_size=args.batch_size,
-        collate_fn=partial(collate_fn, args.max_prot_len, transform_fn),
+        collate_fn=partial(collate_fn, max_len=args.max_prot_len, transform_fn=transform_fn),
         num_workers=args.num_workers
     )
 
@@ -155,7 +155,7 @@ def entrypoint():
     parser.add_argument('--compute_mean', '--pool', action='store_true',
                         help='Compute the average over the sequence axis of embeddings. '
                              'Applies only if the used model does produce sequence-wise outputs.')
-    parser.add_argument('--sub_wildcards', action='store_true',
+    parser.add_argument('--substitute_wildcards', action='store_true',
                         help='Substitute amino acid wildcards by possible substitutes.')
     parser.add_argument('--cast_to',
                         help='Cast embedding arrays to a numpy data type.')
