@@ -46,6 +46,7 @@ class BaseProtTransEmbeddingModel(BaseProteinEmbeddingModel):
     def __init__(self, model, tokenizer):
         super().__init__()
         self.model = model
+        self.model.eval()
         self.tokenizer = tokenizer
 
     def _validate_model_name(self, model_name):
@@ -140,6 +141,7 @@ class ESMEmbeddingModel(BaseProteinEmbeddingModel):
         super().__init__()
 
         self.model, self.alphabet = torch.hub.load('facebookresearch/esm:main', model_name)
+        self.model.eval()
         self.batch_converter = self.alphabet.get_batch_converter()
         self.repr_layer = repr_layer
 
