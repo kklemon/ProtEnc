@@ -176,12 +176,3 @@ input_format_mapping = {
 output_format_mapping = {
     'lmdb': LMDBWriter
 }
-#
-#
-# if __name__ == '__main__':
-#     import tempfile
-#
-#     with tempfile.TemporaryDirectory() as tmp:
-#         with LMDBWriter(tmp) as writer:
-#             for i in range(10):
-#                 writer(str(i), i)
