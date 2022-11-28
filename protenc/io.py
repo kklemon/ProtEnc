@@ -163,7 +163,7 @@ class LMDBWriter(BaseOutputWriter):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         env, txn = self.ctx
-        txn.close()
+        txn.commit()
         env.close()
 
 
