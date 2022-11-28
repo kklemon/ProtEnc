@@ -76,12 +76,50 @@ torch = ["torch"]
 typing = ["types-PyYAML", "types-requests", "types-simplejson", "types-toml", "types-tqdm", "types-urllib3"]
 
 [[package]]
+name = "humanfriendly"
+version = "10.0"
+description = "Human friendly output for text interfaces using Python"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.dependencies]
+pyreadline3 = {version = "*", markers = "sys_platform == \"win32\" and python_version >= \"3.8\""}
+
+[[package]]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
 category = "main"
 optional = false
 python-versions = ">=3.5"
+
+[[package]]
+name = "json-stream"
+version = "2.1.1"
+description = "Streaming JSON encoder and decoder"
+category = "main"
+optional = false
+python-versions = "<4,>=3.5"
+
+[package.dependencies]
+json-stream-rs-tokenizer = ">=0.4.8"
+
+[package.extras]
+httpx = ["httpx"]
+requests = ["requests"]
+
+[[package]]
+name = "json-stream-rs-tokenizer"
+version = "0.4.12"
+description = "A faster tokenizer for the json-stream Python library"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4"
+
+[package.extras]
+benchmark = ["contexttimer (>=0.3,<0.4)", "json-stream-to-standard-types (>=0.1,<0.2)", "tqdm (>=4.64,<5)", "typer (>=0.6,<0.7)"]
+test = ["json-stream-rs-tokenizer[benchmark]", "pytest (>7.1,<8)"]
 
 [[package]]
 name = "lmdb"
@@ -188,6 +226,14 @@ python-versions = ">=3.6.8"
 
 [package.extras]
 diagrams = ["jinja2", "railroad-diagrams"]
+
+[[package]]
+name = "pyreadline3"
+version = "3.4.1"
+description = "A python implementation of GNU readline."
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "python-dateutil"
@@ -415,7 +461,7 @@ test = ["pytest (>=3.0.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "a0a5cf405da3abba2f9e934e3a608a07a1460dbaa53864cce8f31412d44d1b5b"
+content-hash = "6971376ee6e46cb41cc7a9af0342f2c03554ced8758cb4de8b95cae60b40f347"
 
 [metadata.files]
 biopython = [
@@ -464,9 +510,61 @@ huggingface-hub = [
     {file = "huggingface_hub-0.11.0-py3-none-any.whl", hash = "sha256:1f540c6d57cb1684d3578d7bf2d35041a5145b17e8af932505db7f4fbcc7640d"},
     {file = "huggingface_hub-0.11.0.tar.gz", hash = "sha256:b48860d791502c2b8a0e6c841214df19c67999198a75d1417512b45752508ac6"},
 ]
+humanfriendly = [
+    {file = "humanfriendly-10.0-py2.py3-none-any.whl", hash = "sha256:1697e1a8a8f550fd43c2865cd84542fc175a61dcb779b6fee18cf6b6ccba1477"},
+    {file = "humanfriendly-10.0.tar.gz", hash = "sha256:6b0b831ce8f15f7300721aa49829fc4e83921a9a301cc7f606be6686a2288ddc"},
+]
 idna = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
     {file = "idna-3.4.tar.gz", hash = "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"},
+]
+json-stream = [
+    {file = "json-stream-2.1.1.tar.gz", hash = "sha256:369a4749f81e9475cd387c44ab9008995a3178509cb1c8ad90b47dbff6c83396"},
+    {file = "json_stream-2.1.1-py3-none-any.whl", hash = "sha256:6a5b3e47bbea7fe7d112185ce29420a5f4d6fcb2ac5954111447116f23e69fb4"},
+]
+json-stream-rs-tokenizer = [
+    {file = "json-stream-rs-tokenizer-0.4.12.tar.gz", hash = "sha256:c3d3f94e890e7f3b28555c190982ea7f5498c253ae584171994175a88e1f789f"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:f5566ff047c1f2cab33398816c497b51e220005256577513d29a9ab27fdf0821"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:a5491c40eec4d6d4967acc9f78cab29e2d9c882f2065c9cb5616adc0b5cfd5da"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ce3d069edb918e29b12fcaa86f44aa25ab457c6343bf69fa1be9f8014faedd29"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:ee4b9c2d261212f309ef75b16c82266c9f8fd4758ddd6d72d5916235395bf8a4"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp310-cp310-win32.whl", hash = "sha256:cea64f51fbd35b142cb5a1d4d606075fea5b33b958c54fe9990242e58d5cdd7a"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp310-cp310-win_amd64.whl", hash = "sha256:beb5b4c7b201ec8afaddf266d3b26e32fddbd3dcec5858c5c093dda013144167"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:7b81b582162ba21ec47faf49dd8de66b2b0806e74cdb94b3c03f39dd744769ae"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:0558b89760acce62697314b0faeadf2ed2bdce4c17f812466dc7ed5b6a4fce36"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b309c78be1b796c8a2af96debb3c01e6fc64176ed14dd3ccf392bdcfc51bcb8b"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:9c2e773c8563e0dea8c842a57c8a29e294934b148711fa623ed73832612d76f2"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp311-cp311-win32.whl", hash = "sha256:66b996184c08ab8972c2c3405b5db1c4f03718537d92d0a579d67f99acccd3a8"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp311-cp311-win_amd64.whl", hash = "sha256:c372857139f616c2dfb47f376683d9cb08937cf59ccd2777c951ef3ae83bfe48"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:b8e25407e2a39db7aa0d252910e3009a74718c84402dbf47eba6a72c8c73ef43"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a7bea68cfc92652eeaa058b5da519be679b17e4470f9ea1cd9f5fc7691eeb3ea"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:80ff6061e6126b9da686b18661d9fcbb4e6ef598d69cdd495af30be5d86f5f02"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp37-cp37m-win32.whl", hash = "sha256:8e626ec3bd6451f017563904e356a4960aaa63a3f088ca69560fdf52bac1a60d"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp37-cp37m-win_amd64.whl", hash = "sha256:bffeaffe6e2570a0f779e3ea0ca91dd1d8c454ca78b902d94f4a4d649da1762c"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:1c5f29678ff9addd9d1e99e5ef47c094577dabb074a8fc3c1fa0eb29b516df92"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:0ce6d60639c3d89f4238b46d4e06a617a81966223ae958634dfe24c9bb3c8e0d"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4244aa20872aee632238868f3ad6c55b4ca007917dfd80ae5afafb631c42a895"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:5c1b0433150c47fd81d14b31b67185849cd8921dc479d0cf265e5f387af75872"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp38-cp38-win32.whl", hash = "sha256:9d91e26438fc8b16c9c22392686e028d731309c1c31a17fbef3e3da352b6686f"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp38-cp38-win_amd64.whl", hash = "sha256:9abb508ab41922d13d279d5b7dafa0afc0e925f26ff480cfccc648c3731c51b5"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:50e649acffff6242100167c6a1dd105d6a732b4459ab1005ed1f4fc6f625722a"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:da1aea84084c28b321751a5b28cec18cb1080ac53a5aec6f07cf3e16ea073800"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9dd0be8a1e51e9ee5a9cb9987d588ca6102231b831f71ded75792b7bca467a3c"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:651febafd857e4cc2f9e198367c469d2cffd66d1ec38f6e6c342124b03385cda"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp39-cp39-win32.whl", hash = "sha256:ad47220446fb2287887ddf45b46da65a9e6520e6449a7967c82541fc24283a8d"},
+    {file = "json_stream_rs_tokenizer-0.4.12-cp39-cp39-win_amd64.whl", hash = "sha256:058a6a633234f03e7beba04c64a6b1bf273a1d4a10f81b86e78971e3b7258523"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp37-pypy37_pp73-macosx_10_9_x86_64.whl", hash = "sha256:0c6dd9ad3a2c98e1f134af25f71acfaa6891fe78da9e303a9627271ac98506c9"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:169f94d3321d0bedce1eae1465077d8857e1f4e06b67165c6d4a1b38bf20ac1d"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp37-pypy37_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:9fd4d6b43d6f9c17d6593cf5c2b8d4ff17c71e8d59f3a7c91a29d5cc9b87949b"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:f832d5db81cf6fd024844f773fa9b983b766ec751618fd67b79238e46d974388"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp38-pypy38_pp73-macosx_10_9_x86_64.whl", hash = "sha256:a62cba1b424e5c6d152ad9924f7316bb3dd281bd65d737e36670cf3d93db5956"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c76c28be7818f9eb8305feca1884b7474324f68147ef3d97eba661a51775295c"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp38-pypy38_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:265df4e4e6327b9c0fbf85e31fc6a02367a92652754ab140f05da7b594d0f9f7"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:6739430a1b396a73b98258824398fa5bee973c80fbf9137264705c250204fca1"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:4593e11ff6db779053bc4bdf84bec9ee67fd83eaf85d3bab18b4ff83f0bad8c5"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:52d921d28322b7d07297b5b05b893813196954a8b172e6498674b4b27fcf541d"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp39-pypy39_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:16fea70306169a35ec3d4e42b9c4e27be53e4b5ca93aea9d446bd76ed47602b0"},
+    {file = "json_stream_rs_tokenizer-0.4.12-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:bce7773e7bb720055df9632c614a68ca48c21ab5895bae1c251fdb9618e29f38"},
 ]
 lmdb = [
     {file = "lmdb-1.3.0-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:63cb73fe7ce9eb93d992d632c85a0476b4332670d9e6a2802b5062f603b7809f"},
@@ -580,6 +678,10 @@ pandas = [
 pyparsing = [
     {file = "pyparsing-3.0.9-py3-none-any.whl", hash = "sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc"},
     {file = "pyparsing-3.0.9.tar.gz", hash = "sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb"},
+]
+pyreadline3 = [
+    {file = "pyreadline3-3.4.1-py3-none-any.whl", hash = "sha256:b0efb6516fd4fb07b45949053826a62fa4cb353db5be2bbb4a7aa1fdd1e345fb"},
+    {file = "pyreadline3-3.4.1.tar.gz", hash = "sha256:6f3d1f7b8a31ba32b73917cefc1f28cc660562f39aea8646d30bd6eff21f7bae"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
