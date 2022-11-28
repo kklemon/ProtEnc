@@ -1,14 +1,11 @@
-protenc
+ProtEnc: generate protein embeddings the easy way
 =======
 
-protenc is a library to simplify extraction of protein embeddings from various pre-trained models, including:
+[ProtEnc](https://github.com/kklemon/ProtEnc) aims to simplify extraction of protein embeddings from various pre-trained models by providing simple APIs and bulk generation scripts for the ever-growing jungle of protein language models (pLMs). Currently, supported models are:
 
 * [ProtTrans](https://github.com/agemagician/ProtTrans) family
 * [ESM](https://github.com/facebookresearch/esm)
 * AlphaFold (coming soon™)
-
-It provides a programmatic Python API as well as a highly flexible bulk extraction script, supporting many input and
-output formats.
 
 **Note:** the project is work in progress.
 
@@ -21,7 +18,7 @@ Usage
 pip install protenc
 ```
 
-**Note:** while protenc depends on [pytorch](https://pytorch.org/), it is not part of the formal dependencies. 
+**Note:** while ProtEnc depends on [pytorch](https://pytorch.org/), it is not part of the formal dependencies. 
 This is due to the large number of different pytorch distributions which may mismatch with the target environment.
 
 ### Python API
@@ -122,6 +119,11 @@ Install dependencies via [Poetry](https://python-poetry.org/):
 ```bash
 poetry install
 ```
+
+Contribution
+------------
+
+Have feature ideas or found a bug? Love to see support for a new model? Feel free to [create an issue](https://github.com/kklemon/ProtEnc/issues/new).
 
 Todo
 ----
