@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "protenc"
 version = "0.1.0"
-description = "Simplify extraction of protein embedding from various models."
+description = "Extract protein embeddings from pretrained models."
 authors = ["Kristian Klemon <kristian.klemon@gmail.com>"]
 readme = "README.md"
 packages = [{include = "protenc"}]
