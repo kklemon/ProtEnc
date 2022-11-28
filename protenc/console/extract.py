@@ -168,7 +168,7 @@ def entrypoint():
                              'Set to 0 for using the main process only. '
                              'Defaults to number of cpu cores on the machine.')
     parser.add_argument('--dry_run', action='store_true',
-                        help='Perform a drun run, i.e. do not write results.')
+                        help='Perform a dry run, i.e. do not write results.')
 
     args, rem_args = parser.parse_known_args(namespace=utils.NestedNamespace())
 
