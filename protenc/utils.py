@@ -1,12 +1,19 @@
+import argparse
 import hashlib
+import pickle
 import random
 import re
+
+import lmdb
 import torch
 
 from itertools import chain
 from collections.abc import Mapping
+from humanfriendly import parse_size
 
 # See https://www.drive5.com/usearch/manual/IUPAC_codes.html
+from torch.utils.data import IterableDataset
+
 nucleotide_wildcard_mapping = {
     'R': ['A', 'G'],
     'Y': ['C', 'T'],
@@ -72,3 +79,45 @@ def sub_nucleotide_wildcards(seq):
     for match in nucleotide_wildcard_re.finditer(seq):
         res = res[:match.start()] + random.choice(nucleotide_wildcard_mapping[match.group()]) + res[match.end():]
     return res
+
+
+def read_from_lmdb(path):
+    with lmdb.open(str(path), readonly=True) as env:
+        with env.begin() as txn, txn.cursor() as cursor:
+            for key, value in cursor.iternext():
+                yield key.decode(), pickle.loads(value)
+
+
+class IteratorWrapper(IterableDataset):
+    def __init__(self, it):
+        self.it = it
+
+    def __iter__(self):
+        yield from self.it
+
+
+class HumanFriendlyParsingAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if isinstance(values, list):
+            values = [parse_size(v) for v in values]
+        else:
+            values = parse_size(values)
+
+        setattr(namespace, self.dest, values)
+
+
+class NestedNamespace(argparse.Namespace):
+    def __init__(self, **kwargs):
+        super().__init__()
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def __setattr__(self, key, value):
+        parent, *children = key.split('.', maxsplit=1)
+        if children:
+            existing = {}
+            if hasattr(self, parent):
+                existing = vars(getattr(self, parent))
+            super().__setattr__(parent, NestedNamespace(**{children[0]: value, **existing}))
+        else:
+            super().__setattr__(key, value)
