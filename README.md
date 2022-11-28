@@ -151,3 +151,4 @@ Todo
   - This may be up to the model providers
 - [ ] Improve documentation
 - [ ] Support translation of gene sequences
+- [ ] Add tests. We need tests!!!
