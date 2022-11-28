@@ -29,7 +29,7 @@ class BaseProteinEmbeddingModel(nn.Module):
 
 def load_huggingface_language_model(model_cls, tokenizer_cls, model_name, load_weights=True):
     if load_weights:
-        model = model_cls.from_pretrained(model_name),
+        model = model_cls.from_pretrained(model_name)
         tokenizer = tokenizer_cls.from_pretrained(model_name)
         return model, tokenizer
     else:
@@ -53,6 +53,9 @@ class BaseProtTransEmbeddingModel(BaseProteinEmbeddingModel):
             f'Unknown model name \'{model_name}\'. Available options are {self.available_models}'
 
     def prepare_sequences(self, sequences):
+        # ProtTrans tokenizers expect whitespaces between residues
+        sequences = [' '.join(s.replace(' ', '')) for s in sequences]
+
         return self.tokenizer.batch_encode_plus(
             sequences,
             return_tensors='pt',
