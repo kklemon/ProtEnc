@@ -144,7 +144,7 @@ def entrypoint():
                         help='Name / ID of the embedding model to be loaded.')
     parser.add_argument('--data_parallel', action='store_true',
                         help='Use multiple GPUs with torch.nn.DataParallel.')
-    parser.add_argument('--amp', action='store_true',
+    parser.add_argument('--amp', '--fp16', dest='amp', action='store_true',
                         help='Automatic mixed precision aka FP16. Can reduce memory consumption '
                              'and speed up inference if supported.')
     parser.add_argument('--device', default='cuda')
@@ -181,3 +181,7 @@ def entrypoint():
     parser.parse_args(namespace=args)
 
     main(args)
+
+
+if __name__ == '__main__':
+    entrypoint()
