@@ -118,6 +118,6 @@ class NestedNamespace(argparse.Namespace):
             existing = {}
             if hasattr(self, parent):
                 existing = vars(getattr(self, parent))
-            super().__setattr__(parent, NestedNamespace(**{children[0]: value, **existing}))
+            super().__setattr__(parent, NestedNamespace(**{**existing, children[0]: value}))
         else:
             super().__setattr__(key, value)
