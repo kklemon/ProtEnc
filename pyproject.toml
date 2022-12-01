@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "protenc"
-version = "0.1.0"
+version = "0.1.1"
 description = "Extract protein embeddings from pretrained models."
 authors = ["Kristian Klemon <kristian.klemon@gmail.com>"]
 readme = "README.md"
