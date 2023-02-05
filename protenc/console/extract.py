@@ -163,10 +163,10 @@ def entrypoint():
                         help='Maximum length of protein sequences. '
                              'Note: this should always be set to some value as length outliers '
                              'may produce high memory peaks for attention-based models.')
-    parser.add_argument('--num_workers', type=int, default=os.cpu_count(),
+    parser.add_argument('--num_workers', type=int, default=0,
                         help='Number of parallel workers for preprocessing and batching. '
                              'Set to 0 for using the main process only. '
-                             'Defaults to number of cpu cores on the machine.')
+                             'Defaults to zero.')
     parser.add_argument('--dry_run', action='store_true',
                         help='Perform a dry run, i.e. do not write results.')
 
