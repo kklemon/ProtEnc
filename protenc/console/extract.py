@@ -10,7 +10,7 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from protenc import io as io, utils
-from protenc.models import EmbeddingKind
+from protenc.models import EmbeddingType
 
 
 def get_input_reader_cls(args):
@@ -97,7 +97,7 @@ def main(args):
             for label, embedding in zip(labels, output):
                 embedding = embedding.cpu().numpy()
 
-                if args.compute_mean and model.embedding_kind == EmbeddingKind.PER_RESIDUE:
+                if args.compute_mean and model.embedding_kind == EmbeddingType.PER_RESIDUE:
                     assert embedding.ndim == 2
                     embedding = embedding.mean(0)
 

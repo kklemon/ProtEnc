@@ -12,13 +12,13 @@ from transformers import (
 )
 
 
-class EmbeddingKind(Enum):
+class EmbeddingType(Enum):
     PER_RESIDUE = 'per_residue'
     PER_PROTEIN = 'per_protein'
 
 
 class BaseProteinEmbeddingModel(nn.Module):
-    embedding_kind: EmbeddingKind
+    embedding_type: EmbeddingType
 
     def prepare_sequences(self, sequences):
         return NotImplementedError
@@ -40,7 +40,7 @@ def load_huggingface_language_model(model_cls, tokenizer_cls, model_name, load_w
 
 
 class BaseProtTransEmbeddingModel(BaseProteinEmbeddingModel):
-    embedding_kind = EmbeddingKind.PER_RESIDUE
+    embedding_kind = EmbeddingType.PER_RESIDUE
     available_models = None
 
     def __init__(self, model, tokenizer):
@@ -135,7 +135,7 @@ class ProtT5EmbeddingModel(BaseProtTransEmbeddingModel):
 
 
 class ESMEmbeddingModel(BaseProteinEmbeddingModel):
-    embedding_kind = EmbeddingKind.PER_RESIDUE
+    embedding_kind = EmbeddingType.PER_RESIDUE
 
     def __init__(self, model_name: str, repr_layer: int):
         super().__init__()
@@ -185,5 +185,10 @@ def list_models():
     return list(embedding_models)
 
 
-def get_model(model_name):
-    return embedding_models[model_name]()
+def get_model(model_name, device=None):
+    model = embedding_models[model_name]()
+
+    if device is not None:
+        model = model.to(device)
+    
+    return model

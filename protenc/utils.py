@@ -3,7 +3,7 @@ import hashlib
 import pickle
 import random
 import re
-
+import numpy as np
 import lmdb
 import torch
 
@@ -86,6 +86,26 @@ def read_from_lmdb(path):
         with env.begin() as txn, txn.cursor() as cursor:
             for key, value in cursor.iternext():
                 yield key.decode(), pickle.loads(value)
+
+
+return_formats = {
+    'torch': (torch.Tensor, torch.tensor),
+    'numpy': (np.ndarray, np.array)
+}
+
+def to_return_format(x, return_format):
+    format = return_formats.get(return_format)
+
+    if format is None:
+        raise ValueError(f'Unknown return format {return_format}. '
+                         f'Supported formats are {list(return_formats)}')
+    
+    cls, cast_fn = format
+
+    if isinstance(x, cls):
+        return x
+
+    return cast_fn(x)
 
 
 class IteratorWrapper(IterableDataset):

@@ -18,40 +18,31 @@ Usage
 pip install protenc
 ```
 
-**Note:** while ProtEnc depends on [pytorch](https://pytorch.org/), it is not part of the formal dependencies. 
-This is due to the large number of different pytorch distributions which may mismatch with the target environment.
+**Note:** while ProtEnc depends on [PyTorch](https://pytorch.org/), it is not part of the formal project dependencies. 
+This is due to the large number of different PyTorch distributions which may mismatch with the target environment.
+It therefore has be installed manually.
 
 ### Python API
 
 ```python
 import protenc
-import torch
 
 # List available models
 print(protenc.list_models())
 
-# Instantiate a model
-model = protenc.get_model('esm2_t33_650M_UR50D')
+# Load encoder model
+encoder = protenc.get_encoder('esm2_t30_150M_UR50D', device='cuda')
 
 proteins = [
   'MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLGYNIVATPRGYVLAGG',
   'KALTARQQEVFDLIRDHISQTGMPPTRAEIAQRLGFRSPNAAEEHLKALARKGVIEIVSGASRGIRLLQEE'
 ]
 
-batch = model.prepare_sequences(proteins)
-
-# Use GPU if available
-if torch.cuda.is_available():
-  model = model.to('cuda')
-  batch = protenc.utils.to_device(batch, 'cuda')
-
-for embed in model(batch):
-  # Embeddings have shape [L, D] where L is the sequence length and D the 
-  # embedding dimensionality.
+for embed in encoder(proteins, return_format='numpy'):
+  # Embeddings have shape [L, D] where L is the sequence length and D the  embedding dimensionality.
   print(embed.shape)
   
-  # Derive a single per-protein embedding vector by averaging along the 
-  # sequence dimension
+  # Derive a single per-protein embedding vector by averaging along the sequence dimension
   embed.mean(0)
 ```
 

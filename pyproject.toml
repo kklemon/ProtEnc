@@ -1,10 +1,12 @@
 [tool.poetry]
 name = "protenc"
-version = "0.1.1"
+version = "0.1.2"
 description = "Extract protein embeddings from pretrained models."
 authors = ["Kristian Klemon <kristian.klemon@gmail.com>"]
 readme = "README.md"
 packages = [{include = "protenc"}]
+repository = "https://github.com/kklemon/ProtEnc"
+homepage = "https://github.com/kklemon/ProtEnc"
 
 [tool.poetry.scripts]
 protenc = 'protenc.console.extract:entrypoint'
