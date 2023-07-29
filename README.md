@@ -129,14 +129,17 @@ Todo
   - [ ] HDF5
   - [ ] DataFrame
   - [ ] Pickle
-- [ ] Large models support
+- [ ] Support for large models
   - [ ] Model offloading
   - [ ] Sharding
+  - [ ] FlashAttention (via Kernl?)
 - [ ] Support for more protein language models
   - [X] Whole ProtTrans family
   - [X] Whole ESM family
   - [ ] AlphaFold (?)
 - [X] Implement all remaining TODOs in code
+- [ ] Evaluation
+- [ ] Demos
 - [ ] Distributed inference
 - [ ] Maybe support some sort of optimized inference such as quantization
   - This may be up to the model providers
