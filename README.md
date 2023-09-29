@@ -1,13 +1,12 @@
 ProtEnc: generate protein embeddings the easy way
 =======
 
-[ProtEnc](https://github.com/kklemon/ProtEnc) aims to simplify extraction of protein embeddings from various pre-trained models by providing simple APIs and bulk generation scripts for the ever-growing jungle of protein language models (pLMs). Currently, supported models are:
+[ProtEnc](https://github.com/kklemon/ProtEnc) aims to simplify extraction of protein embeddings from various pre-trained models by providing simple APIs and bulk generation scripts for the ever-growing landscape of protein language models (pLMs). Currently, supported models are:
 
 * [ProtTrans](https://github.com/agemagician/ProtTrans) family
 * [ESM](https://github.com/facebookresearch/esm)
 * AlphaFold (coming soon™)
-
-**Note:** the project is work in progress.
+* [OmegaPLM](https://www.biorxiv.org/content/10.1101/2022.07.21.500999v1) (coming soon™)
 
 Usage
 -----
@@ -17,10 +16,6 @@ Usage
 ```bash
 pip install protenc
 ```
-
-**Note:** while ProtEnc depends on [PyTorch](https://pytorch.org/), it is not part of the formal project dependencies. 
-This is due to the large number of different PyTorch distributions which may mismatch with the target environment.
-It therefore has be installed manually.
 
 ### Python API
 
@@ -51,7 +46,7 @@ for embed in encoder(proteins, return_format='numpy'):
 After installation, use the `protenc` shell command for bulk generation and export of protein embeddings.
 
 ```bash
-protenc <path-to-protein-sequences> <path-to-output> --model_name=<name-of-model>
+protenc sequences.fasta embeddings.lmdb --model_name=<name-of-model>
 ```
 
 By default, input and output formats are inferred from the file extensions.
