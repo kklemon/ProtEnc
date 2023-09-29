@@ -12,15 +12,25 @@ homepage = "https://github.com/kklemon/ProtEnc"
 protenc = 'protenc.console.extract:entrypoint'
 
 [tool.poetry.dependencies]
-python = "^3.8"
-transformers = "^4.24.0"
-lmdb = "^1.3.0"
-pandas = "^1.5.2"
-tqdm = "^4.64.1"
-biopython = "^1.80"
-sentencepiece = "^0.1.97"
-json-stream = "^2.1.1"
+python = "~3.10"
+torch = {version = "^2.0.1", source = "pytorch-gpu-src"}
+transformers = "^4.33.3"
+lmdb = "^1.4.1"
+pandas = "^2.1.1"
+tqdm = "^4.66.1"
+biopython = "^1.81"
+sentencepiece = "^0.1.99"
+json-stream = "^2.3.2"
 humanfriendly = "^10.0"
+
+[[tool.poetry.source]]
+name = "pytorch-gpu-src"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "explicit"
+
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.16.0"
 
 [build-system]
 requires = ["poetry-core"]
