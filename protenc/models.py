@@ -1,8 +1,9 @@
+from dataclasses import dataclass
 import torch
 import torch.nn as nn
 
 from collections import OrderedDict
-from typing import Dict, Callable
+from typing import Callable
 from enum import Enum
 from transformers import (
     BertModel,
@@ -10,6 +11,7 @@ from transformers import (
     T5EncoderModel,
     T5Tokenizer
 )
+from tensordict import TensorDict
 
 
 class EmbeddingType(Enum):
@@ -57,12 +59,12 @@ class BaseProtTransEmbeddingModel(BaseProteinEmbeddingModel):
         # ProtTrans tokenizers expect whitespaces between residues
         sequences = [' '.join(s.replace(' ', '')) for s in sequences]
 
-        return self.tokenizer.batch_encode_plus(
+        return TensorDict(self.tokenizer.batch_encode_plus(
             sequences,
             return_tensors='pt',
             add_special_tokens=True,
             padding=True
-        )
+        ), batch_size=len(sequences))
 
     def _post_process_embedding(self, embed, seq_len):
         raise NotImplementedError
@@ -148,9 +150,9 @@ class ESMEmbeddingModel(BaseProteinEmbeddingModel):
     def prepare_sequences(self, sequences):
         _, _, batch_tokens = self.batch_converter([('', seq) for seq in sequences])
 
-        return {
+        return TensorDict({
             'tokens': batch_tokens
-        }
+        }, batch_size=len(sequences))
 
     @torch.no_grad()
     def forward(self, input):
@@ -162,31 +164,125 @@ class ESMEmbeddingModel(BaseProteinEmbeddingModel):
             yield token_representations[i, 1:seq_len - 1]
 
 
-embedding_models: Dict[str, Callable[[], BaseProteinEmbeddingModel]] = OrderedDict([
-    # ProtTrans family. See https://github.com/agemagician/ProtTrans
-    ('prot_t5_xl_uniref50', lambda: ProtT5EmbeddingModel('prot_t5_xl_uniref50')),
-    ('prot_t5_xl_bfd', lambda: ProtT5EmbeddingModel('prot_t5_xl_bfd')),
-    ('prot_t5_xxl_uniref50', lambda: ProtT5EmbeddingModel('prot_t5_xxl_uniref50')),
-    ('prot_t5_xxl_bfd', lambda: ProtT5EmbeddingModel('prot_t5_xxl_bfd')),
-    ('prot_bert_bfd', lambda: ProtBERTEmbeddingModel('prot_bert_bfd')),
-    ('prot_bert', lambda: ProtBERTEmbeddingModel('prot_bert')),
-
-    # ESM family. See https://github.com/facebookresearch/esm
-    ('esm2_t48_15B_UR50D', lambda: ESMEmbeddingModel('esm2_t48_15B_UR50D', repr_layer=48)),
-    ('esm2_t36_3B_UR50D', lambda: ESMEmbeddingModel('esm2_t36_3B_UR50D', repr_layer=36)),
-    ('esm2_t33_650M_UR50D', lambda: ESMEmbeddingModel('esm2_t33_650M_UR50D', repr_layer=33)),
-    ('esm2_t30_150M_UR50D', lambda: ESMEmbeddingModel('esm2_t30_150M_UR50D', repr_layer=30)),
-    ('esm2_t12_35M_UR50D', lambda: ESMEmbeddingModel('esm2_t12_35M_UR50D', repr_layer=12)),
-    ('esm2_t6_8M_UR50D', lambda: ESMEmbeddingModel('esm2_t6_8M_UR50D', repr_layer=6))
-])
+@dataclass
+class ModelDescription:
+    name: str
+    family: str
+    embed_dim: int
+    init_fn: Callable[[], BaseProteinEmbeddingModel]
 
 
-def list_models():
-    return list(embedding_models)
+model_descriptions = [
+    # ProtTrans family (https://github.com/agemagician/ProtTrans)
+    ModelDescription(
+        name='prot_t5_xl_uniref50',
+        family='ProtTrans',
+        embed_dim=1024,
+        init_fn=lambda: ProtT5EmbeddingModel('prot_t5_xl_uniref50')
+    ),
+    ModelDescription(
+        name='prot_t5_xl_bfd',
+        family='ProtTrans',
+        embed_dim=1024,
+        init_fn=lambda: ProtT5EmbeddingModel('prot_t5_xl_bfd')
+    ),
+    ModelDescription(
+        name='prot_t5_xxl_uniref50',
+        family='ProtTrans',
+        embed_dim=1024,
+        init_fn=lambda: ProtT5EmbeddingModel('prot_t5_xxl_uniref50')
+    ),
+    ModelDescription(
+        name='prot_t5_xxl_bfd',
+        family='ProtTrans',
+        embed_dim=1024,
+        init_fn=lambda: ProtT5EmbeddingModel('prot_t5_xxl_bfd')
+    ),
+    ModelDescription(
+        name='prot_bert_bfd',
+        family='ProtTrans',
+        embed_dim=1024,
+        init_fn=lambda: ProtBERTEmbeddingModel('prot_bert_bfd')
+    ),
+    ModelDescription(
+        name='prot_bert',
+        family='ProtTrans',
+        embed_dim=1024,
+        init_fn=lambda: ProtBERTEmbeddingModel('prot_bert')
+    ),
+
+    # ESM family (https://github.com/facebookresearch/esm)
+    ModelDescription(
+        name='esm2_t48_15B_UR50D',
+        family='ESM',
+        embed_dim=5120,
+        init_fn=lambda: ESMEmbeddingModel('esm2_t48_15B_UR50D', repr_layer=48)
+    ),
+    ModelDescription(
+        name='esm2_t36_3B_UR50D',
+        family='ESM',
+        embed_dim=2560,
+        init_fn=lambda: ESMEmbeddingModel('esm2_t33_650M_UR50D', repr_layer=33)
+    ),
+    ModelDescription(
+        name='esm2_t33_650M_UR50D',
+        family='ESM',
+        embed_dim=1280,
+        init_fn=lambda: ESMEmbeddingModel('esm2_t48_15B_UR50D', repr_layer=48)
+    ),
+    ModelDescription(
+        name='esm2_t30_150M_UR50D',
+        family='ESM',
+        embed_dim=640,
+        init_fn=lambda: ESMEmbeddingModel('esm2_t30_150M_UR50D', repr_layer=30)
+    ),
+    ModelDescription(
+        name='esm2_t12_35M_UR50D',
+        family='ESM',
+        embed_dim=480,
+        init_fn=lambda: ESMEmbeddingModel('esm2_t12_35M_UR50D', repr_layer=12)
+    ),
+    ModelDescription(
+        name='esm2_t6_8M_UR50D',
+        family='ESM',
+        embed_dim=320,
+        init_fn=lambda: ESMEmbeddingModel('esm2_t6_8M_UR50D', repr_layer=6)
+    ),
+]
+
+
+model_dict: dict[str, ModelDescription] = OrderedDict(
+    (m.name, m) for m in model_descriptions
+)
+
+model_families = set(m.family for m in model_descriptions)
+
+
+def list_models(family: str | None = None):
+    if family is not None:
+        if family not in model_families:
+            raise ValueError(f'Unknown model family \'{family}\'. Available families are {model_families}')
+        
+        return [m.name for m in model_descriptions if m.family == family]
+    else:
+        return list(model_dict)
+    
+
+def get_model_info(model_name: str):
+    if model_name not in model_dict:
+        raise ValueError(f'Unknown model \'{model_name}\'. Available models are {list_models()}')
+
+    model_desc = model_dict[model_name]
+
+    return {
+        'name': model_desc.name,
+        'family': model_desc.family,
+        'embed_dim': model_desc.embed_dim
+    }
 
 
 def get_model(model_name, device=None):
-    model = embedding_models[model_name]()
+    model = model_dict[model_name].init_fn()
 
     if device is not None:
         model = model.to(device)

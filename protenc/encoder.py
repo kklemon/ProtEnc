@@ -12,12 +12,13 @@ class ProteinEncoder:
         self,
         model: BaseProteinEmbeddingModel,
         batch_size: BatchSize = None,
+        autocast: bool = False,
         preprocess_workers: int = 0
     ):
         self.model = model
         self.batch_size = 1 if batch_size is None else batch_size
+        self.autocast = autocast
         self.preprocess_workers = preprocess_workers
-
 
     @cached_property
     def device(self):
@@ -27,12 +28,22 @@ class ProteinEncoder:
         assert isinstance(self.batch_size, int), 'batch size must be provided as integer at the moment'
         return DataLoader(
             proteins,
-            collate_fn=self.model.prepare_sequences,
+            collate_fn=self.prepare_sequences,
             batch_size=self.batch_size,
             num_workers=self.preprocess_workers
         )
     
-    def _encode(
+    def prepare_sequences(self, proteins: list[str]):
+        return self.model.prepare_sequences(proteins)
+    
+    def _encode(self, batch):
+        with (
+            torch.inference_mode(),
+            torch.autocast('cuda', enabled=self.autocast)
+        ):
+            return self.model(batch)
+        
+    def _encode_batches(
         self,
         proteins: list[str],
         average_sequence: bool = False,
@@ -41,9 +52,9 @@ class ProteinEncoder:
         batches = self._get_data_loader(proteins)
 
         for batch in batches:
-            batch = utils.to_device(batch, self.device)
+            batch = batch.to(self.device)
             
-            for embed in self.model(batch):
+            for embed in self._encode(batch):
                 if average_sequence:
                     embed = embed.mean(0)
                 
@@ -53,29 +64,43 @@ class ProteinEncoder:
         self,
         proteins: ProteinEncoderInput,
         average_sequence: bool = False,
-        autocast: bool = False,
         return_format: ReturnFormat = 'torch'
     ):
-        with torch.autocast('cuda', enabled=autocast):
-            if isinstance(proteins, dict):
-                yield from zip(
-                    proteins.keys(),
-                    self.encode(
-                        list(proteins.values()),
-                        average_sequence=average_sequence,
-                        return_format=return_format
-                    )
-                )
-            elif isinstance(proteins, list):
-                yield from self._encode(
-                    proteins,
+        if isinstance(proteins, dict):
+            yield from zip(
+                proteins.keys(),
+                self.encode(
+                    list(proteins.values()),
                     average_sequence=average_sequence,
                     return_format=return_format
                 )
-            else:
-                raise TypeError('Expected list of proteins sequences or dictionary with protein '
-                                f'sequences as values but found {type(proteins)}')
+            )
+        elif isinstance(proteins, list):
+            yield from self._encode_batches(
+                proteins,
+                average_sequence=average_sequence,
+                return_format=return_format
+            )
+        else:
+            raise TypeError('Expected list of proteins sequences or dictionary with protein '
+                            f'sequences as values but found {type(proteins)}')
     
+    def encode_batch(
+        self,
+        proteins: list[str],
+        average_sequence: bool = False,
+        return_format: ReturnFormat = 'torch'
+    ):
+        batch = self.prepare_sequences(proteins)
+        batch = batch.to(self.device)
+
+        embeds = self._encode(batch)
+
+        if average_sequence:
+            embeds = embeds.mean(1)
+        
+        return utils.to_return_format(embeds.cpu(), return_format)
+        
     def __call__(self, *args, **kwargs):
         return self.encode(*args, **kwargs)
 
