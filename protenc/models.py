@@ -228,7 +228,7 @@ model_descriptions = [
         name='esm2_t33_650M_UR50D',
         family='ESM',
         embed_dim=1280,
-        init_fn=lambda: ESMEmbeddingModel('esm2_t48_15B_UR50D', repr_layer=48)
+        init_fn=lambda: ESMEmbeddingModel('esm2_t33_650M_UR50D', repr_layer=48)
     ),
     ModelDescription(
         name='esm2_t30_150M_UR50D',
