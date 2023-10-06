@@ -1,8 +1,6 @@
 from collections import OrderedDict
 import pytest
 
-from protenc.models import list_models
-
 
 @pytest.fixture
 def protein_dict():
@@ -13,6 +11,7 @@ def protein_dict():
         'RCTLGDMESPVFAFPLLLKLETHIEKLFLYSFSWDFECSQCGHQYQNRHMKSLVTFTNVIPEWHPLNAAHFGPCNNCNSKSQIRKMVLEKVSPIFMLHFVEGLPQNDL'
         'QHYAFHFEGCLYQITSVIQYRANNHFITWILDADGSWLECDDLKGPCSERHKKFEVPASEIHIVIWERKIS')
     ])
+
 
 @pytest.fixture
 def proteins(protein_dict):

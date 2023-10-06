@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from .fixtures import proteins
+from .fixtures import protein_dict, proteins
 from protenc.models import get_model, get_model_info
 from .utils import list_models_to_test, skip_no_gpu
 
@@ -14,7 +14,7 @@ def test_protein_language_model(
     proteins,
     device
 ):
-    model = get_model(model_name, device=device)
+    model = get_model(model_name).to(device)
     model_info = get_model_info(model_name)
 
     batch = model.prepare_sequences(proteins).to(device)

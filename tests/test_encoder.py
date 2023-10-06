@@ -13,11 +13,11 @@ from .utils import list_models_to_test, skip_no_gpu, skip_large_models
 @skip_large_models(max_embed_dim=1280)
 def test_get_encoder(model_name, device):
     encoder = get_encoder(model_name, device=device)
-    model = get_model(model_name, device=device)
+    model = get_model(model_name).to(device)
 
     for encoder_param, model_param in zip(encoder.model.parameters(), model.parameters()):
         assert torch.allclose(encoder_param, model_param)
-        assert encoder_param.device == device
+        assert encoder_param.device.type == device
 
 
 @skip_no_gpu

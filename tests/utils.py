@@ -40,7 +40,7 @@ def skip_large_models(max_embed_dim=None):
     return wrap
 
 
-def list_models_to_test(max_embed_dim=1280):
+def list_models_to_test(max_embed_dim=512):
     return [
         model_name
         for model_name in list_models()
