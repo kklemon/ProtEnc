@@ -165,93 +165,112 @@ class ESMEmbeddingModel(BaseProteinEmbeddingModel):
 
 
 @dataclass
-class ModelDescription:
+class ModelCard:
     name: str
     family: str
     embed_dim: int
     init_fn: Callable[[], BaseProteinEmbeddingModel]
 
+    @classmethod
+    def from_model_cls(cls, *, model_cls, model_kwargs, **kwargs):
+        def init_fn(**init_kwargs):
+            return model_cls(**{**model_kwargs, **init_kwargs})
+
+        return cls(init_fn=init_fn, **kwargs)
+
 
 model_descriptions = [
     # ProtTrans family (https://github.com/agemagician/ProtTrans)
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='prot_t5_xl_uniref50',
         family='ProtTrans',
         embed_dim=1024,
-        init_fn=lambda: ProtT5EmbeddingModel('prot_t5_xl_uniref50')
+        model_cls=ProtT5EmbeddingModel,
+        model_kwargs=dict(model_name='prot_t5_xl_uniref50')
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='prot_t5_xl_bfd',
         family='ProtTrans',
         embed_dim=1024,
-        init_fn=lambda: ProtT5EmbeddingModel('prot_t5_xl_bfd')
+        model_cls=ProtT5EmbeddingModel,
+        model_kwargs=dict(model_name='prot_t5_xl_bfd')
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='prot_t5_xxl_uniref50',
         family='ProtTrans',
         embed_dim=1024,
-        init_fn=lambda: ProtT5EmbeddingModel('prot_t5_xxl_uniref50')
+        model_cls=ProtT5EmbeddingModel,
+        model_kwargs=dict(model_name='prot_t5_xxl_uniref50')
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='prot_t5_xxl_bfd',
         family='ProtTrans',
         embed_dim=1024,
-        init_fn=lambda: ProtT5EmbeddingModel('prot_t5_xxl_bfd')
+        model_cls=ProtT5EmbeddingModel,
+        model_kwargs=dict(model_name='prot_t5_xxl_bfd')
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='prot_bert_bfd',
         family='ProtTrans',
         embed_dim=1024,
-        init_fn=lambda: ProtBERTEmbeddingModel('prot_bert_bfd')
+        model_cls=ProtBERTEmbeddingModel,
+        model_kwargs=dict(model_name='prot_bert_bfd')
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='prot_bert',
         family='ProtTrans',
         embed_dim=1024,
-        init_fn=lambda: ProtBERTEmbeddingModel('prot_bert')
+        model_cls=ProtBERTEmbeddingModel,
+        model_kwargs=dict(model_name='prot_bert')
     ),
 
     # ESM family (https://github.com/facebookresearch/esm)
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='esm2_t48_15B_UR50D',
         family='ESM',
         embed_dim=5120,
-        init_fn=lambda: ESMEmbeddingModel('esm2_t48_15B_UR50D', repr_layer=48)
+        model_cls=ESMEmbeddingModel,
+        model_kwargs=dict(model_name='esm2_t48_15B_UR50D', repr_layer=48)
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='esm2_t36_3B_UR50D',
         family='ESM',
         embed_dim=2560,
-        init_fn=lambda: ESMEmbeddingModel('esm2_t33_650M_UR50D', repr_layer=33)
+        model_cls=ESMEmbeddingModel,
+        model_kwargs=dict(model_name='esm2_t36_3B_UR50D', repr_layer=36)
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='esm2_t33_650M_UR50D',
         family='ESM',
         embed_dim=1280,
-        init_fn=lambda: ESMEmbeddingModel('esm2_t33_650M_UR50D', repr_layer=48)
+        model_cls=ESMEmbeddingModel,
+        model_kwargs=dict(model_name='esm2_t33_650M_UR50D', repr_layer=33)
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='esm2_t30_150M_UR50D',
         family='ESM',
         embed_dim=640,
-        init_fn=lambda: ESMEmbeddingModel('esm2_t30_150M_UR50D', repr_layer=30)
+        model_cls=ESMEmbeddingModel,
+        model_kwargs=dict(model_name='esm2_t30_150M_UR50D', repr_layer=30)
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='esm2_t12_35M_UR50D',
         family='ESM',
         embed_dim=480,
-        init_fn=lambda: ESMEmbeddingModel('esm2_t12_35M_UR50D', repr_layer=12)
+        model_cls=ESMEmbeddingModel,
+        model_kwargs=dict(model_name='esm2_t12_35M_UR50D', repr_layer=12)
     ),
-    ModelDescription(
+    ModelCard.from_model_cls(
         name='esm2_t6_8M_UR50D',
         family='ESM',
         embed_dim=320,
-        init_fn=lambda: ESMEmbeddingModel('esm2_t6_8M_UR50D', repr_layer=6)
+        model_cls=ESMEmbeddingModel,
+        model_kwargs=dict(model_name='esm2_t6_8M_UR50D', repr_layer=6)
     ),
 ]
 
 
-model_dict: dict[str, ModelDescription] = OrderedDict(
+model_dict: dict[str, ModelCard] = OrderedDict(
     (m.name, m) for m in model_descriptions
 )
 
@@ -281,10 +300,6 @@ def get_model_info(model_name: str):
     }
 
 
-def get_model(model_name, device=None):
-    model = model_dict[model_name].init_fn()
-
-    if device is not None:
-        model = model.to(device)
-    
+def get_model(model_name, **kwargs):
+    model = model_dict[model_name].init_fn(**kwargs)
     return model
