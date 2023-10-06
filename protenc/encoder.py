@@ -106,5 +106,9 @@ class ProteinEncoder:
 
 
 def get_encoder(model_name, device=None, **kwargs):
-    model = get_model(model_name, device)
+    model = get_model(model_name)
+
+    if device is not None:
+        model = model.to(device)
+
     return ProteinEncoder(model, **kwargs)
